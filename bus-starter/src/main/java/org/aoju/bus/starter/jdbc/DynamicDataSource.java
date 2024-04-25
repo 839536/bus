@@ -33,6 +33,7 @@ import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 import java.lang.reflect.Field;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -51,7 +52,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
     /**
      * 单例句柄
      */
-    private static DynamicDataSource instance;
+    private static volatile DynamicDataSource instance;
 
     /**
      * 单例方法
@@ -110,11 +111,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
         if (!keySet.contains(key)) {
             logger.info(String.format("can not found datasource by key: '%s',this session may use default datasource", key));
         }
-        if (null == key) {
-            Logger.info("The current datasource key ：{}", "dataSource");
-        } else {
-            Logger.info("The current datasource key ：{}", key);
-        }
+        Logger.debug("The current datasource key ：{}", Objects.requireNonNullElse(key, "dataSource"));
         return key;
     }
 
