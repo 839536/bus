@@ -124,4 +124,6 @@ public class BusXConfig {
      */
     public static final String ELASTIC = EXTEND + Symbol.DOT + "elastic";
 
+    public static final String OCR = EXTEND + Symbol.DOT + "ocr";
+
 }
