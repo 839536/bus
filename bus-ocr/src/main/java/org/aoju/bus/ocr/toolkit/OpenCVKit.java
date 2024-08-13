@@ -32,18 +32,21 @@ public class OpenCVKit {
     /**
      * Mat to BufferedImage
      *
-     * @param mat
+     * @param matrix
      * @return
      */
-    public static BufferedImage mat2Image(Mat mat) {
-        int width = mat.width();
-        int height = mat.height();
-        byte[] data = new byte[width * height * (int) mat.elemSize()];
-        Imgproc.cvtColor(mat, mat, 4);
-        mat.get(0, 0, data);
-        BufferedImage ret = new BufferedImage(width, height, 5);
-        ret.getRaster().setDataElements(0, 0, width, height, data);
-        return ret;
+    public static BufferedImage mat2Image(Mat matrix) {
+        int type = BufferedImage.TYPE_BYTE_GRAY;
+        if (matrix.channels() > 1) {
+            type = BufferedImage.TYPE_3BYTE_BGR;
+        }
+        int bufferSize = matrix.channels() * matrix.cols() * matrix.rows();
+        byte[] buffer = new byte[bufferSize];
+        matrix.get(0, 0, buffer); // get all pixel from martix
+        BufferedImage image = new BufferedImage(matrix.cols(), matrix.rows(), type);
+        final byte[] targetPixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
+        System.arraycopy(buffer, 0, targetPixels, 0, buffer.length);
+        return image;
     }
 
     /**

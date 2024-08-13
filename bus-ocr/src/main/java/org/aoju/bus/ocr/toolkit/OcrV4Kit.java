@@ -85,25 +85,20 @@ public class OcrV4Kit {
 
 
             StringBuilder fullText = new StringBuilder();
-            for (int i = 0; i < lines.size(); i++) {
-                for (int j = 0; j < lines.get(i).size(); j++) {
-                    String text = lines.get(i).get(j).getText();
+            for (List<RotatedBoxCompX> rotatedBoxCompXES : lines) {
+                for (RotatedBoxCompX rotatedBoxCompX : rotatedBoxCompXES) {
+                    String text = rotatedBoxCompX.getText();
                     if (text.trim().isEmpty())
                         continue;
                     fullText.append(text).append("    ");
                 }
                 fullText.append('\n');
             }
-
-            Logger.info(fullText.toString());
-
-
-            BufferedImage bufferedImage = (BufferedImage) image.getWrappedImage();
+            Mat mat = (Mat) image.getWrappedImage();
+            BufferedImage bufferedImage = OpenCVKit.mat2Image(mat);
             for (RotatedBox result : list) {
                 ImageKit.drawImageRectWithText(bufferedImage, result.getBox(), result.getText());
             }
-
-
             String base64 = toBase64(bufferedImage);
             return new OcrResult(base64, fullText.toString());
         }
@@ -165,9 +160,7 @@ public class OcrV4Kit {
             cvMat.release();
             srcPoint2f.release();
             dstPoint2f.release();
-
         }
-        mat.release();
         return result;
     }
 
